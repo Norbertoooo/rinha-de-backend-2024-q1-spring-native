@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: rinha-de-backend-2024-q1-spring
+  datasource:
+    username: spring_db
+    password: spring_db
+    url: jdbc:postgresql://localhost:5432/spring_db
+  threads:
+    virtual:
+      enabled: true
+  jpa:
+    show-sql: true
