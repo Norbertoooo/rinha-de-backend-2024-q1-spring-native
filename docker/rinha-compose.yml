@@ -4,7 +4,7 @@ services:
   spring_db:
     container_name: spring_db
     image: postgres:latest
-    command: postgres -c checkpoint_timeout=600 -c max_wal_size=4096
+    command: postgres -c checkpoint_timeout=600 -c max_wal_size=4096 -c synchronous_commit=0 -c fsync=0 -c full_page_writes=0
     environment:
       POSTGRES_PASSWORD: spring_db
       POSTGRES_USER: spring_db
@@ -22,13 +22,13 @@ services:
           # de memória. A distribuição feita aqui é apenas
           # um exemplo – distribua como quiser.
           cpus: "0.25"
-          memory: "240MB"
+          memory: "140MB"
     ports:
       - "5432:5432"
 
   spring-one: &spring-api
     hostname: spring-one
-    image: rinha-de-backend-2024-q1-spring:0.0.1-SNAPSHOT
+    image: nortana/rinha-de-backend-2024-q1-spring:0.0.1-SNAPSHOT
     container_name: spring-one
     environment:
       spring.datasource.url: jdbc:postgresql://spring_db:5432/spring_db
@@ -41,7 +41,7 @@ services:
       resources:
         limits:
           cpus: "0.55"
-          memory: "150MB"
+          memory: "200MB"
 
   spring-two:
     <<: *spring-api
