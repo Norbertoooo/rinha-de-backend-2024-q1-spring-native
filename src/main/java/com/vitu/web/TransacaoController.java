@@ -22,8 +22,11 @@ public class TransacaoController {
     @PostMapping("/clientes/{id}/transacoes")
     public ResponseEntity<CriarNovaTransacaoResponseDto> criarNovaTransacao(@PathVariable Long id,
                                                                             @RequestBody @Valid TransacaoRequestDto transacaoRequestDto) {
+
         log.info("Recendo requisição para criação de nova transação: {}", transacaoRequestDto);
+
         CriarNovaTransacaoResponseDto criarNovaTransacaoResponseDto = transacaoService.efetuarTransacao(id, transacaoRequestDto);
+
         return ResponseEntity.ok(criarNovaTransacaoResponseDto);
     }
 

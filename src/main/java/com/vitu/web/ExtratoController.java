@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-
 public class ExtratoController {
 
     private final ExtratoService extratoService;
@@ -23,6 +22,7 @@ public class ExtratoController {
     public ResponseEntity<ExtratoResponseDto> obterExtrato(@PathVariable Long id) {
 
         log.info("Recebendo requisição para obter extrato do cliente: {}", id);
+
         ExtratoResponseDto extratoResponseDto = extratoService.obterExtratoPorClienteId(id);
 
         return ResponseEntity.ok(extratoResponseDto);

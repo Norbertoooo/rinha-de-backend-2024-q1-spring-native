@@ -5,6 +5,7 @@ import com.vitu.domain.TipoTransacao;
 import com.vitu.domain.Transacao;
 import com.vitu.dto.request.TransacaoRequestDto;
 import com.vitu.dto.response.CriarNovaTransacaoResponseDto;
+import com.vitu.exception.OperacaoNaoSuportadaException;
 import com.vitu.repository.TransacaoRepository;
 import com.vitu.service.ClienteService;
 import com.vitu.service.TransacaoService;
@@ -31,11 +32,13 @@ public class TransacaoServiceImpl implements TransacaoService {
     @Transactional
     public CriarNovaTransacaoResponseDto efetuarTransacao(Long clienteId, TransacaoRequestDto transacaoRequestDto) {
 
+        log.info("Iniciando nova transação: {} - clienteId: {}", transacaoRequestDto, clienteId);
+
         Cliente cliente = clienteService.obterClientePorId(clienteId);
 
-        Cliente clienteAtualizado = transacaoStrategyMap
-                .get(transacaoRequestDto.getTipo().toString())
-                .efetuarTransacao(transacaoRequestDto, cliente);
+        TransacaoStrategy transacaoStrategy = this.getTransacaoStrategy(transacaoRequestDto.getTipo());
+
+        Cliente clienteAtualizado = transacaoStrategy.efetuarTransacao(transacaoRequestDto, cliente);
 
         this.salvar(transacaoRequestDto, cliente);
 
@@ -47,14 +50,23 @@ public class TransacaoServiceImpl implements TransacaoService {
                 .build();
     }
 
+    private TransacaoStrategy getTransacaoStrategy(Character tipo) {
+        return transacaoStrategyMap.entrySet()
+                .stream()
+                .filter(entry-> entry.getKey().equals(tipo.toString().toLowerCase()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElseThrow(OperacaoNaoSuportadaException::new);
+    }
+
     @Override
     public List<Transacao> obterTransacoesPorDataDesc(Long clienteId) {
 
-        clienteService.verificaSeExisteClientePorId(clienteId);
+        log.info("Obtendo transações para o cliente: {}", clienteId);
 
-        return transacaoRepository
-                .findTop10AllByCliente_IdOrderByRealizadaEmDesc(clienteId);
+        clienteService.verificarSeExisteClientePorId(clienteId);
 
+        return transacaoRepository.findTop10AllByCliente_IdOrderByRealizadaEmDesc(clienteId);
     }
 
     @Override
@@ -67,6 +79,8 @@ public class TransacaoServiceImpl implements TransacaoService {
                 .realizadaEm(ZonedDateTime.now())
                 .cliente(cliente)
                 .build();
+
+        log.info("Salvando nova transação: {}", transacao);
 
         return transacaoRepository.save(transacao);
     }

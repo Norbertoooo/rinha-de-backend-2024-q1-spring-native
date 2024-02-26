@@ -1,6 +1,7 @@
 package com.vitu.exception.handler;
 
 import com.vitu.exception.ClienteNaoEncontradoException;
+import com.vitu.exception.OperacaoNaoSuportadaException;
 import com.vitu.exception.SaldoInconsistenteException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -37,5 +38,12 @@ public class GlobalExceptionHandler {
         log.error(exception.getMessage());
         return ResponseEntity.unprocessableEntity().build();
     }
+
+    @ExceptionHandler(OperacaoNaoSuportadaException.class)
+    public ResponseEntity<?> operacaoNaoSuportadaExceptionHandler(HttpServletRequest request, OperacaoNaoSuportadaException exception) {
+        log.error(request.getMethod() + request.getRequestURI());
+        return ResponseEntity.unprocessableEntity().build();
+    }
+
 
 }

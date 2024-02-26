@@ -12,15 +12,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/clientes")
 @RequiredArgsConstructor
+@RequestMapping("/clientes")
 public class ClienteController {
 
     private final ClienteService clienteService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> obterClientePorId(@PathVariable Long id) {
+
+        log.info("Recebendo requisição para obter cliente pelo id: {}", id);
+
         Cliente cliente = clienteService.obterClientePorId(id);
+
         return ResponseEntity.ok(cliente);
     }
 

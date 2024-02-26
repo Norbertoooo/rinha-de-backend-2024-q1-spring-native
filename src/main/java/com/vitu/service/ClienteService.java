@@ -8,6 +8,6 @@ public interface ClienteService {
 
     Cliente salvar(Cliente cliente);
 
-    void verificaSeExisteClientePorId(Long id);
+    void verificarSeExisteClientePorId(Long id);
 
 }

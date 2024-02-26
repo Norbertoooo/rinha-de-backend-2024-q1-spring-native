@@ -30,7 +30,7 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public void verificaSeExisteClientePorId(Long id) {
+    public void verificarSeExisteClientePorId(Long id) {
         log.info("Verificando se existe cliente pelo id: {}", id);
         if (Boolean.FALSE.equals(clienteRepository.existsById(id))) {
             throw new ClienteNaoEncontradoException();
